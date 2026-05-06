@@ -15,12 +15,6 @@ const assetMap = {
   "梅干し": "assets/umeboshi.svg"
 };
 
-const garnishAssets = [
-  "assets/garnish-lettuce.svg",
-  "assets/garnish-parsley.svg",
-  "assets/garnish-sesame.svg"
-];
-
 const difficultySettings = {
   easy: {
     label: "かんたん",
@@ -200,7 +194,7 @@ function renderBento(popIndex = -1) {
       slot.style.setProperty("--food-rotate", `${placement.rotate}deg`);
       slot.style.setProperty("--food-x", `${placement.x}px`);
       slot.style.setProperty("--food-y", `${placement.y}px`);
-      slot.innerHTML = `${makeGarnish(index, placement.garnish)}${makeFoodImage(game.selectedItems[index])}`;
+      slot.innerHTML = makeFoodImage(game.selectedItems[index]);
     }
     if (index === popIndex) {
       slot.classList.add("pop-in");
@@ -231,21 +225,12 @@ function makePlacement(food) {
   return {
     rotate: isRice ? randomBetween(-2, 2) : randomBetween(-9, 9),
     x: randomBetween(-4, 4),
-    y: isRice ? randomBetween(0, 3) : randomBetween(-3, 5),
-    garnish: garnishAssets[Math.floor(Math.random() * garnishAssets.length)]
+    y: isRice ? randomBetween(0, 3) : randomBetween(-3, 5)
   };
 }
 
 function randomBetween(min, max) {
   return Math.round((min + Math.random() * (max - min)) * 10) / 10;
-}
-
-function makeGarnish(index, garnish) {
-  if (index % 2 === 1) {
-    return `<img class="garnish-art" src="${garnish}" alt="" draggable="false">`;
-  }
-
-  return "";
 }
 
 function showCompleteEffect() {
