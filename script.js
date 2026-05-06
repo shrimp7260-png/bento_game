@@ -15,6 +15,12 @@ const assetMap = {
   "梅干し": "assets/umeboshi.svg"
 };
 
+const garnishAssets = [
+  "assets/garnish-lettuce.svg",
+  "assets/garnish-parsley.svg",
+  "assets/garnish-sesame.svg"
+];
+
 const difficultySettings = {
   easy: {
     label: "かんたん",
@@ -66,6 +72,7 @@ const difficultyText = document.querySelector("#difficultyText");
 const orderName = document.querySelector("#orderName");
 const orderList = document.querySelector("#orderList");
 const bentoSlots = document.querySelector("#bentoSlots");
+const bentoCard = document.querySelector(".bento-card");
 const foodGrid = document.querySelector("#foodGrid");
 const feedbackText = document.querySelector("#feedbackText");
 const resultModeText = document.querySelector("#resultModeText");
@@ -88,6 +95,7 @@ const game = {
   timeLeft: 60,
   currentOrder: null,
   selectedItems: [],
+  placements: [],
   lastOrderName: "",
   timerId: 0,
   feedbackTimerId: 0,
@@ -160,6 +168,7 @@ function pickNextOrder() {
   game.currentOrder = nextOrder;
   game.lastOrderName = nextOrder.name;
   game.selectedItems = [];
+  game.placements = [];
   orderName.textContent = nextOrder.name;
   document.documentElement.style.setProperty("--item-count", nextOrder.items.length);
   renderOrder();
@@ -186,8 +195,12 @@ function renderBento(popIndex = -1) {
     const slot = document.createElement("div");
     slot.className = "slot";
     if (game.selectedItems[index]) {
+      const placement = game.placements[index];
       slot.classList.add("is-filled");
-      slot.innerHTML = makeFoodImage(game.selectedItems[index]);
+      slot.style.setProperty("--food-rotate", `${placement.rotate}deg`);
+      slot.style.setProperty("--food-x", `${placement.x}px`);
+      slot.style.setProperty("--food-y", `${placement.y}px`);
+      slot.innerHTML = `${makeGarnish(index, placement.garnish)}${makeFoodImage(game.selectedItems[index])}`;
     }
     if (index === popIndex) {
       slot.classList.add("pop-in");
@@ -209,7 +222,37 @@ function renderFoodButtons() {
 }
 
 function makeFoodImage(food) {
-  return `<img class="food-art" src="${assetMap[food]}" alt="" draggable="false">`;
+  const riceClass = food === "ごはん" || food === "大盛ごはん" ? " rice-art" : "";
+  return `<img class="food-art${riceClass}" src="${assetMap[food]}" alt="" draggable="false">`;
+}
+
+function makePlacement(food) {
+  const isRice = food === "ごはん" || food === "大盛ごはん";
+  return {
+    rotate: isRice ? randomBetween(-2, 2) : randomBetween(-9, 9),
+    x: randomBetween(-4, 4),
+    y: isRice ? randomBetween(0, 3) : randomBetween(-3, 5),
+    garnish: garnishAssets[Math.floor(Math.random() * garnishAssets.length)]
+  };
+}
+
+function randomBetween(min, max) {
+  return Math.round((min + Math.random() * (max - min)) * 10) / 10;
+}
+
+function makeGarnish(index, garnish) {
+  if (index % 2 === 1) {
+    return `<img class="garnish-art" src="${garnish}" alt="" draggable="false">`;
+  }
+
+  return "";
+}
+
+function showCompleteEffect() {
+  bentoCard.classList.remove("is-complete");
+  void bentoCard.offsetWidth;
+  bentoCard.classList.add("is-complete");
+  window.setTimeout(() => bentoCard.classList.remove("is-complete"), 560);
 }
 
 function chooseFood(food) {
@@ -218,6 +261,7 @@ function chooseFood(food) {
   }
 
   game.selectedItems.push(food);
+  game.placements.push(makePlacement(food));
   renderBento(game.selectedItems.length - 1);
 
   if (game.selectedItems.length === game.currentOrder.items.length) {
@@ -235,8 +279,9 @@ function judgeBento() {
     game.maxCombo = Math.max(game.maxCombo, game.combo);
     const earned = getSettings().scoreMultiplier + Math.floor(game.combo / 4);
     game.score += earned;
-    showFeedback(`完成 +${earned}`);
-    pickNextOrder();
+    showFeedback(`おいしそう！ +${earned}`);
+    showCompleteEffect();
+    window.setTimeout(pickNextOrder, 430);
   } else {
     game.misses += 1;
     game.combo = 0;
