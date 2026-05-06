@@ -68,9 +68,9 @@ button {
 }
 
 .logo-mark img {
-  width: 74px;
-  height: 58px;
-  object-fit: cover;
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
 }
 
 .kicker {
