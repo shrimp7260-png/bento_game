@@ -1,18 +1,18 @@
 "use strict";
 
-const iconMap = {
-  "ごはん": "🍚",
-  "大盛ごはん": "🍚",
-  "からあげ": "🍗",
-  "卵焼き": "🍳",
-  "ブロッコリー": "🥦",
-  "鮭": "🐟",
-  "ハンバーグ": "🍔",
-  "ポテト": "🍟",
-  "トマト": "🍅",
-  "エビフライ": "🍤",
-  "ウインナー": "🌭",
-  "梅干し": "🔴"
+const assetMap = {
+  "ごはん": "assets/rice.svg",
+  "大盛ごはん": "assets/rice-large.svg",
+  "からあげ": "assets/karaage.svg",
+  "卵焼き": "assets/tamagoyaki.svg",
+  "ブロッコリー": "assets/broccoli.svg",
+  "鮭": "assets/salmon.svg",
+  "ハンバーグ": "assets/hamburg.svg",
+  "ポテト": "assets/potato.svg",
+  "トマト": "assets/tomato.svg",
+  "エビフライ": "assets/ebifry.svg",
+  "ウインナー": "assets/sausage.svg",
+  "梅干し": "assets/umeboshi.svg"
 };
 
 const difficultySettings = {
@@ -171,7 +171,7 @@ function renderOrder() {
   game.currentOrder.items.forEach((item) => {
     const chip = document.createElement("div");
     chip.className = "order-chip";
-    chip.innerHTML = `${iconMap[item]}<small>${item}</small>`;
+    chip.innerHTML = `${makeFoodImage(item)}<small>${item}</small>`;
     chip.title = item;
     orderList.appendChild(chip);
   });
@@ -187,7 +187,7 @@ function renderBento(popIndex = -1) {
     slot.className = "slot";
     if (game.selectedItems[index]) {
       slot.classList.add("is-filled");
-      slot.textContent = iconMap[game.selectedItems[index]];
+      slot.innerHTML = makeFoodImage(game.selectedItems[index]);
     }
     if (index === popIndex) {
       slot.classList.add("pop-in");
@@ -202,10 +202,14 @@ function renderFoodButtons() {
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.food = food;
-    button.innerHTML = `${iconMap[food]}<span>${food}</span>`;
+    button.innerHTML = `${makeFoodImage(food)}<span>${food}</span>`;
     button.addEventListener("click", () => chooseFood(food));
     foodGrid.appendChild(button);
   });
+}
+
+function makeFoodImage(food) {
+  return `<img class="food-art" src="${assetMap[food]}" alt="" draggable="false">`;
 }
 
 function chooseFood(food) {

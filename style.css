@@ -64,7 +64,13 @@ button {
   border-radius: 8px;
   background: var(--main);
   box-shadow: 0 10px 0 var(--main-dark);
-  font-size: 3rem;
+  overflow: hidden;
+}
+
+.logo-mark img {
+  width: 74px;
+  height: 58px;
+  object-fit: cover;
 }
 
 .kicker {
@@ -222,6 +228,20 @@ h1 {
   font-size: 1.35rem;
 }
 
+.food-art {
+  display: block;
+  width: min(78%, 62px);
+  height: min(78%, 62px);
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 0 rgba(76, 42, 31, 0.12));
+}
+
+.order-chip .food-art {
+  width: 34px;
+  height: 34px;
+}
+
 .order-chip small {
   display: block;
   max-width: 100%;
@@ -238,6 +258,7 @@ h1 {
   min-height: 174px;
   border: 5px solid #e98c9d;
   background:
+    url("assets/bento-box.svg") center / 100% 100% no-repeat,
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.55), transparent 28%),
     linear-gradient(145deg, #ffd1da, #f5a9b8);
   box-shadow:
@@ -291,6 +312,11 @@ h1 {
   box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.78);
   color: rgba(48, 37, 29, 0.24);
   font-size: 1.9rem;
+}
+
+.slot .food-art {
+  width: min(92%, 76px);
+  height: min(92%, 76px);
 }
 
 .slot:nth-child(1) {
@@ -357,6 +383,8 @@ h1 {
 .food-grid button {
   display: grid;
   place-items: center;
+  align-content: center;
+  gap: 2px;
   min-height: 62px;
   border: 2px solid var(--line);
   border-radius: 8px;
@@ -364,6 +392,11 @@ h1 {
   box-shadow: 0 4px 0 rgba(48, 37, 29, 0.15);
   font-size: 1.55rem;
   font-weight: 950;
+}
+
+.food-grid .food-art {
+  width: 42px;
+  height: 42px;
 }
 
 .food-grid span {
@@ -407,11 +440,14 @@ h1 {
   .order-card, .bento-card { padding: 8px; }
   .order-card h2 { font-size: 1.35rem; margin-bottom: 5px; }
   .order-chip { min-height: 32px; font-size: 1.05rem; }
+  .order-chip .food-art { width: 26px; height: 26px; }
   .order-chip small { font-size: 0.42rem; }
   .bento-card { min-height: 126px; }
   .bento-slots { min-height: 104px; padding: 5px; gap: 5px; }
   .slot { min-height: 46px; font-size: 1.38rem; }
+  .slot .food-art { width: 48px; height: 48px; }
   .food-grid { gap: 5px; }
   .food-grid button { min-height: 44px; font-size: 1.08rem; }
+  .food-grid .food-art { width: 30px; height: 30px; }
   .food-grid span { font-size: 0.54rem; }
 }
