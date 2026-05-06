@@ -119,12 +119,18 @@ function renderOrder() {
   });
 }
 
-function renderBento() {
+function renderBento(popIndex = -1) {
   bentoSlots.innerHTML = "";
   for (let index = 0; index < 4; index += 1) {
     const slot = document.createElement("div");
     slot.className = "slot";
-    slot.textContent = game.selectedItems[index] ? iconMap[game.selectedItems[index]] : "";
+    if (game.selectedItems[index]) {
+      slot.classList.add("is-filled");
+      slot.textContent = iconMap[game.selectedItems[index]];
+    }
+    if (index === popIndex) {
+      slot.classList.add("pop-in");
+    }
     bentoSlots.appendChild(slot);
   }
 }
@@ -134,7 +140,7 @@ function chooseFood(food) {
     return;
   }
   game.selectedItems.push(food);
-  renderBento();
+  renderBento(game.selectedItems.length - 1);
   if (game.selectedItems.length === 4) {
     judgeBento();
   }

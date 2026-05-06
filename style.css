@@ -163,8 +163,11 @@ h1 {
 .order-list,
 .bento-slots {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 7px;
+}
+
+.order-list {
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .order-chip,
@@ -178,13 +181,89 @@ h1 {
   font-size: 1.35rem;
 }
 
-.slot {
-  min-height: 58px;
-  background: #fffaf4;
-  font-size: 1.55rem;
+.bento-card {
+  position: relative;
+  min-height: 174px;
+  border: 5px solid #e98c9d;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.55), transparent 28%),
+    linear-gradient(145deg, #ffd1da, #f5a9b8);
+  box-shadow:
+    inset 0 -8px 0 rgba(172, 68, 83, 0.12),
+    0 8px 0 rgba(170, 68, 40, 0.14);
+  padding: 14px;
 }
 
-.bento-card { position: relative; }
+.bento-card::before {
+  position: absolute;
+  inset: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.58);
+  border-radius: 8px;
+  content: "";
+  pointer-events: none;
+}
+
+.bento-slots {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  min-height: 140px;
+  gap: 6px;
+  border: 3px solid #c56a7a;
+  border-radius: 8px;
+  background: #ffdce3;
+  padding: 6px;
+}
+
+.slot {
+  display: grid;
+  place-items: center;
+  min-height: 62px;
+  border: 2px dashed rgba(156, 82, 73, 0.32);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 248, 239, 0.72)),
+    #fff3e4;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.78);
+  color: rgba(48, 37, 29, 0.24);
+  font-size: 1.9rem;
+}
+
+.slot:nth-child(1) {
+  grid-row: span 2;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 246, 225, 0.7)),
+    #fff0d9;
+}
+
+.slot.is-filled {
+  border-style: solid;
+  border-color: rgba(172, 68, 83, 0.18);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.72), transparent 46%),
+    #fff8ef;
+  color: var(--ink);
+}
+
+.slot.pop-in {
+  animation: pop-in 220ms ease-out;
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.72);
+  }
+
+  68% {
+    transform: scale(1.12);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
 
 .feedback {
   position: absolute;
@@ -259,7 +338,9 @@ h1 {
   .order-card, .bento-card { padding: 8px; }
   .order-card h2 { font-size: 1.35rem; margin-bottom: 5px; }
   .order-chip { min-height: 32px; font-size: 1.05rem; }
-  .slot { min-height: 42px; font-size: 1.25rem; }
+  .bento-card { min-height: 126px; }
+  .bento-slots { min-height: 104px; padding: 5px; gap: 5px; }
+  .slot { min-height: 46px; font-size: 1.38rem; }
   .food-grid { gap: 6px; }
   .food-grid button { min-height: 50px; font-size: 1.22rem; }
 }
