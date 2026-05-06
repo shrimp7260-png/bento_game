@@ -2,22 +2,56 @@
 
 const iconMap = {
   "ごはん": "🍚",
+  "大盛ごはん": "🍚",
   "からあげ": "🍗",
   "卵焼き": "🍳",
   "ブロッコリー": "🥦",
   "鮭": "🐟",
   "ハンバーグ": "🍔",
   "ポテト": "🍟",
-  "トマト": "🍅"
+  "トマト": "🍅",
+  "エビフライ": "🍤",
+  "ウインナー": "🌭",
+  "梅干し": "🔴"
 };
 
-const orders = [
-  { name: "からあげ弁当", items: ["ごはん", "からあげ", "卵焼き", "ブロッコリー"] },
-  { name: "鮭弁当", items: ["ごはん", "鮭", "卵焼き", "トマト"] },
-  { name: "ハンバーグ弁当", items: ["ごはん", "ハンバーグ", "ポテト", "ブロッコリー"] },
-  { name: "キッズ弁当", items: ["ごはん", "からあげ", "ポテト", "トマト"] },
-  { name: "野菜多め弁当", items: ["ごはん", "鮭", "ブロッコリー", "トマト"] }
-];
+const difficultySettings = {
+  easy: {
+    label: "かんたん",
+    timeLimit: 75,
+    scoreMultiplier: 1,
+    orders: [
+      { name: "からあげ弁当", items: ["ごはん", "からあげ", "卵焼き", "ブロッコリー"] },
+      { name: "鮭弁当", items: ["ごはん", "鮭", "卵焼き", "トマト"] },
+      { name: "キッズ弁当", items: ["ごはん", "からあげ", "ポテト", "トマト"] }
+    ],
+    foods: ["ごはん", "からあげ", "卵焼き", "ブロッコリー", "鮭", "ポテト", "トマト"]
+  },
+  normal: {
+    label: "ふつう",
+    timeLimit: 60,
+    scoreMultiplier: 2,
+    orders: [
+      { name: "ハンバーグ弁当", items: ["ごはん", "ハンバーグ", "卵焼き", "ポテト", "ブロッコリー"] },
+      { name: "鮭から弁当", items: ["ごはん", "鮭", "からあげ", "卵焼き", "トマト"] },
+      { name: "エビフライ弁当", items: ["ごはん", "エビフライ", "ポテト", "ブロッコリー", "トマト"] },
+      { name: "野菜多め弁当", items: ["ごはん", "鮭", "卵焼き", "ブロッコリー", "トマト"] }
+    ],
+    foods: ["ごはん", "からあげ", "卵焼き", "ブロッコリー", "鮭", "ハンバーグ", "ポテト", "トマト", "エビフライ"]
+  },
+  hard: {
+    label: "むずかしい",
+    timeLimit: 45,
+    scoreMultiplier: 3,
+    orders: [
+      { name: "大盛からあげ弁当", items: ["大盛ごはん", "からあげ", "からあげ", "卵焼き", "ブロッコリー", "梅干し"] },
+      { name: "幕の内弁当", items: ["ごはん", "鮭", "からあげ", "卵焼き", "ブロッコリー", "ウインナー"] },
+      { name: "特製ミックス弁当", items: ["ごはん", "ハンバーグ", "エビフライ", "ポテト", "トマト", "卵焼き"] },
+      { name: "よくばり弁当", items: ["大盛ごはん", "鮭", "からあげ", "エビフライ", "ウインナー", "ブロッコリー"] }
+    ],
+    foods: ["ごはん", "大盛ごはん", "からあげ", "卵焼き", "ブロッコリー", "鮭", "ハンバーグ", "ポテト", "トマト", "エビフライ", "ウインナー", "梅干し"]
+  }
+};
 
 const startScreen = document.querySelector("#startScreen");
 const gameScreen = document.querySelector("#gameScreen");
@@ -28,9 +62,11 @@ const missText = document.querySelector("#missText");
 const timerLabel = document.querySelector("#timerLabel");
 const timeText = document.querySelector("#timeText");
 const modeText = document.querySelector("#modeText");
+const difficultyText = document.querySelector("#difficultyText");
 const orderName = document.querySelector("#orderName");
 const orderList = document.querySelector("#orderList");
 const bentoSlots = document.querySelector("#bentoSlots");
+const foodGrid = document.querySelector("#foodGrid");
 const feedbackText = document.querySelector("#feedbackText");
 const resultModeText = document.querySelector("#resultModeText");
 const resultTitle = document.querySelector("#resultTitle");
@@ -43,7 +79,9 @@ const backToStartButton = document.querySelector("#backToStartButton");
 
 const game = {
   mode: "time",
+  difficulty: "normal",
   score: 0,
+  successCount: 0,
   combo: 0,
   maxCombo: 0,
   misses: 0,
@@ -67,23 +105,41 @@ function showScreen(screen) {
   resultScreen.classList.toggle("is-hidden", screen !== "result");
 }
 
+function getSettings() {
+  return difficultySettings[game.difficulty];
+}
+
+function selectDifficulty(difficulty) {
+  game.difficulty = difficulty;
+  document.querySelectorAll("[data-difficulty]").forEach((button) => {
+    button.classList.toggle("is-selected", button.dataset.difficulty === difficulty);
+  });
+}
+
 function startGame(mode) {
   clearInterval(game.timerId);
   clearTimeout(game.feedbackTimerId);
+
+  const settings = getSettings();
   game.mode = mode;
   game.score = 0;
+  game.successCount = 0;
   game.combo = 0;
   game.maxCombo = 0;
   game.misses = 0;
-  game.timeLeft = 60;
+  game.timeLeft = settings.timeLimit;
   game.lastOrderName = "";
   game.isPlaying = true;
-  modeText.textContent = mode === "time" ? "タイムアタック 60秒" : "エンドレス ミスするまで";
-  timerLabel.textContent = mode === "time" ? "時間" : "成功";
+
+  modeText.textContent = mode === "time" ? `タイムアタック ${settings.timeLimit}秒` : "エンドレス ミスするまで";
+  difficultyText.textContent = `難易度: ${settings.label} / x${settings.scoreMultiplier}`;
+  timerLabel.textContent = mode === "time" ? "時間" : "完成";
   showScreen("game");
+  renderFoodButtons();
   showFeedback("");
   pickNextOrder();
   updateHud();
+
   if (mode === "time") {
     game.timerId = setInterval(tickTimer, 1000);
   }
@@ -98,12 +154,14 @@ function tickTimer() {
 }
 
 function pickNextOrder() {
-  const candidates = orders.filter((order) => order.name !== game.lastOrderName);
+  const settings = getSettings();
+  const candidates = settings.orders.filter((order) => order.name !== game.lastOrderName);
   const nextOrder = candidates[Math.floor(Math.random() * candidates.length)];
   game.currentOrder = nextOrder;
   game.lastOrderName = nextOrder.name;
   game.selectedItems = [];
   orderName.textContent = nextOrder.name;
+  document.documentElement.style.setProperty("--item-count", nextOrder.items.length);
   renderOrder();
   renderBento();
 }
@@ -113,15 +171,18 @@ function renderOrder() {
   game.currentOrder.items.forEach((item) => {
     const chip = document.createElement("div");
     chip.className = "order-chip";
-    chip.textContent = iconMap[item];
+    chip.innerHTML = `${iconMap[item]}<small>${item}</small>`;
     chip.title = item;
     orderList.appendChild(chip);
   });
 }
 
 function renderBento(popIndex = -1) {
+  const slotCount = game.currentOrder.items.length;
   bentoSlots.innerHTML = "";
-  for (let index = 0; index < 4; index += 1) {
+  bentoSlots.className = `bento-slots count-${slotCount}`;
+
+  for (let index = 0; index < slotCount; index += 1) {
     const slot = document.createElement("div");
     slot.className = "slot";
     if (game.selectedItems[index]) {
@@ -135,13 +196,27 @@ function renderBento(popIndex = -1) {
   }
 }
 
+function renderFoodButtons() {
+  foodGrid.innerHTML = "";
+  getSettings().foods.forEach((food) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.food = food;
+    button.innerHTML = `${iconMap[food]}<span>${food}</span>`;
+    button.addEventListener("click", () => chooseFood(food));
+    foodGrid.appendChild(button);
+  });
+}
+
 function chooseFood(food) {
-  if (!game.isPlaying || game.selectedItems.length >= 4) {
+  if (!game.isPlaying || game.selectedItems.length >= game.currentOrder.items.length) {
     return;
   }
+
   game.selectedItems.push(food);
   renderBento(game.selectedItems.length - 1);
-  if (game.selectedItems.length === 4) {
+
+  if (game.selectedItems.length === game.currentOrder.items.length) {
     judgeBento();
   }
 }
@@ -149,11 +224,14 @@ function chooseFood(food) {
 function judgeBento() {
   const correct = [...game.currentOrder.items].sort().join(",");
   const selected = [...game.selectedItems].sort().join(",");
+
   if (correct === selected) {
-    game.score += 1;
     game.combo += 1;
+    game.successCount += 1;
     game.maxCombo = Math.max(game.maxCombo, game.combo);
-    showFeedback("完成 +1");
+    const earned = getSettings().scoreMultiplier + Math.floor(game.combo / 4);
+    game.score += earned;
+    showFeedback(`完成 +${earned}`);
     pickNextOrder();
   } else {
     game.misses += 1;
@@ -163,8 +241,9 @@ function judgeBento() {
       finishGame();
       return;
     }
-    window.setTimeout(pickNextOrder, 280);
+    window.setTimeout(pickNextOrder, 300);
   }
+
   updateHud();
 }
 
@@ -182,7 +261,7 @@ function updateHud() {
   scoreText.textContent = game.score;
   comboText.textContent = game.combo;
   missText.textContent = game.misses;
-  timeText.textContent = game.mode === "time" ? Math.max(0, game.timeLeft) : game.score;
+  timeText.textContent = game.mode === "time" ? Math.max(0, game.timeLeft) : game.successCount;
 }
 
 function finishGame() {
@@ -190,19 +269,19 @@ function finishGame() {
   game.isPlaying = false;
   resultModeText.textContent = game.mode === "time" ? "タイムアタック結果" : "エンドレス結果";
   resultTitle.textContent = game.mode === "time" ? "時間切れ" : "つめ終わり";
-  resultScoreLabel.textContent = game.mode === "time" ? "スコア" : "完成数";
+  resultScoreLabel.textContent = "スコア";
   resultScore.textContent = game.score;
   resultMaxCombo.textContent = game.maxCombo;
   resultMiss.textContent = game.misses;
   showScreen("result");
 }
 
-document.querySelectorAll("[data-start-mode]").forEach((button) => {
-  button.addEventListener("click", () => startGame(button.dataset.startMode));
+document.querySelectorAll("[data-difficulty]").forEach((button) => {
+  button.addEventListener("click", () => selectDifficulty(button.dataset.difficulty));
 });
 
-document.querySelectorAll("[data-food]").forEach((button) => {
-  button.addEventListener("click", () => chooseFood(button.dataset.food));
+document.querySelectorAll("[data-start-mode]").forEach((button) => {
+  button.addEventListener("click", () => startGame(button.dataset.startMode));
 });
 
 retryButton.addEventListener("click", () => startGame(game.mode));

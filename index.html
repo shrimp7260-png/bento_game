@@ -12,6 +12,14 @@
         <div class="logo-mark" aria-hidden="true">🍱</div>
         <p class="kicker">注文どおりにおかずをつめよう</p>
         <h1>お弁当つめマスター</h1>
+        <section class="difficulty-panel" aria-label="難易度選択">
+          <span>難易度</span>
+          <div class="difficulty-row">
+            <button class="difficulty-button" type="button" data-difficulty="easy">かんたん</button>
+            <button class="difficulty-button is-selected" type="button" data-difficulty="normal">ふつう</button>
+            <button class="difficulty-button" type="button" data-difficulty="hard">むずかしい</button>
+          </div>
+        </section>
         <div class="mode-actions">
           <button class="primary-button" type="button" data-start-mode="time">タイムアタック</button>
           <button class="secondary-button" type="button" data-start-mode="endless">エンドレス</button>
@@ -26,6 +34,7 @@
           <div><span id="timerLabel">時間</span><strong id="timeText">60</strong></div>
         </header>
         <p id="modeText" class="mode-text">タイムアタック 60秒</p>
+        <p id="difficultyText" class="difficulty-text">難易度: ふつう</p>
 
         <section class="order-card">
           <span>注文</span>
@@ -38,16 +47,7 @@
           <div id="bentoSlots" class="bento-slots"></div>
         </section>
 
-        <section class="food-grid" aria-label="おかずを選ぶ">
-          <button type="button" data-food="ごはん">🍚<span>ごはん</span></button>
-          <button type="button" data-food="からあげ">🍗<span>からあげ</span></button>
-          <button type="button" data-food="卵焼き">🍳<span>卵焼き</span></button>
-          <button type="button" data-food="ブロッコリー">🥦<span>ブロッコリー</span></button>
-          <button type="button" data-food="鮭">🐟<span>鮭</span></button>
-          <button type="button" data-food="ハンバーグ">🍔<span>ハンバーグ</span></button>
-          <button type="button" data-food="ポテト">🍟<span>ポテト</span></button>
-          <button type="button" data-food="トマト">🍅<span>トマト</span></button>
-        </section>
+        <section id="foodGrid" class="food-grid" aria-label="おかずを選ぶ"></section>
       </section>
 
       <section id="resultScreen" class="screen result-screen is-hidden">

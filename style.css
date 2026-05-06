@@ -83,6 +83,39 @@ h1 {
 
 .mode-actions { display: grid; gap: 12px; }
 
+.difficulty-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.difficulty-panel > span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.difficulty-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.difficulty-button {
+  min-height: 52px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 0 rgba(48, 37, 29, 0.15);
+  font-size: 0.94rem;
+  font-weight: 950;
+}
+
+.difficulty-button.is-selected {
+  border-color: var(--main);
+  background: var(--main);
+  color: #fff;
+}
+
 .primary-button,
 .secondary-button {
   min-height: 58px;
@@ -97,8 +130,8 @@ h1 {
 
 .game-screen {
   display: grid;
-  grid-template-rows: auto auto auto minmax(118px, 1fr) auto;
-  gap: 8px;
+  grid-template-rows: auto auto auto auto minmax(118px, 1fr) auto;
+  gap: 7px;
   overflow: hidden;
 }
 
@@ -138,6 +171,14 @@ h1 {
   text-align: center;
 }
 
+.difficulty-text {
+  margin: -3px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: center;
+}
+
 .order-card,
 .bento-card {
   border: 3px solid var(--line);
@@ -167,7 +208,7 @@ h1 {
 }
 
 .order-list {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(var(--item-count, 4), 1fr);
 }
 
 .order-chip,
@@ -179,6 +220,17 @@ h1 {
   background: #fff5ee;
   border: 2px solid #f0d0ba;
   font-size: 1.35rem;
+}
+
+.order-chip small {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.5rem;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .bento-card {
@@ -217,6 +269,16 @@ h1 {
   padding: 6px;
 }
 
+.bento-slots.count-5,
+.bento-slots.count-6 {
+  grid-template-columns: 1.15fr repeat(2, 1fr);
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.bento-slots.count-6 .slot:nth-child(1) {
+  grid-row: auto;
+}
+
 .slot {
   display: grid;
   place-items: center;
@@ -236,6 +298,10 @@ h1 {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 246, 225, 0.7)),
     #fff0d9;
+}
+
+.bento-slots.count-6 .slot:nth-child(1) {
+  grid-row: auto;
 }
 
 .slot.is-filled {
@@ -283,7 +349,7 @@ h1 {
 
 .food-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 7px;
   padding-bottom: calc(6px + var(--safe-bottom));
 }
@@ -306,6 +372,7 @@ h1 {
 }
 
 .food-grid button:active,
+.difficulty-button:active,
 .primary-button:active,
 .secondary-button:active {
   transform: translateY(3px);
@@ -334,13 +401,17 @@ h1 {
 
 @media (max-height: 690px) {
   .screen { padding-top: 10px; }
-  .game-screen { gap: 6px; grid-template-rows: auto auto auto minmax(92px, 1fr) auto; }
+  .start-screen { gap: 12px; }
+  .difficulty-button { min-height: 44px; font-size: 0.82rem; }
+  .game-screen { gap: 5px; grid-template-rows: auto auto auto auto minmax(92px, 1fr) auto; }
   .order-card, .bento-card { padding: 8px; }
   .order-card h2 { font-size: 1.35rem; margin-bottom: 5px; }
   .order-chip { min-height: 32px; font-size: 1.05rem; }
+  .order-chip small { font-size: 0.42rem; }
   .bento-card { min-height: 126px; }
   .bento-slots { min-height: 104px; padding: 5px; gap: 5px; }
   .slot { min-height: 46px; font-size: 1.38rem; }
-  .food-grid { gap: 6px; }
-  .food-grid button { min-height: 50px; font-size: 1.22rem; }
+  .food-grid { gap: 5px; }
+  .food-grid button { min-height: 44px; font-size: 1.08rem; }
+  .food-grid span { font-size: 0.54rem; }
 }
