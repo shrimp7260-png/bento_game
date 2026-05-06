@@ -136,7 +136,7 @@ h1 {
 
 .game-screen {
   display: grid;
-  grid-template-rows: auto auto auto auto minmax(118px, 1fr) auto;
+  grid-template-rows: auto auto auto auto minmax(0, 1fr);
   gap: 7px;
   overflow: hidden;
 }
@@ -255,7 +255,10 @@ h1 {
 
 .bento-card {
   position: relative;
-  min-height: 174px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  min-height: 0;
   border: 5px solid #e98c9d;
   background:
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.55), transparent 28%),
@@ -479,7 +482,10 @@ h1 {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 7px;
-  padding-bottom: calc(6px + var(--safe-bottom));
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  padding-bottom: 0;
 }
 
 .food-grid button {
@@ -538,13 +544,13 @@ h1 {
   .screen { padding-top: 10px; }
   .start-screen { gap: 12px; }
   .difficulty-button { min-height: 44px; font-size: 0.82rem; }
-  .game-screen { gap: 5px; grid-template-rows: auto auto auto auto minmax(92px, 1fr) auto; }
+  .game-screen { gap: 5px; grid-template-rows: auto auto auto auto minmax(0, 1fr); }
   .order-card, .bento-card { padding: 8px; }
   .order-card h2 { font-size: 1.35rem; margin-bottom: 5px; }
   .order-chip { min-height: 32px; font-size: 1.05rem; }
   .order-chip .food-art { width: 26px; height: 26px; }
   .order-chip small { font-size: 0.42rem; }
-  .bento-card { min-height: 126px; }
+  .bento-card { gap: 7px; }
   .bento-slots { min-height: 104px; padding: 5px; gap: 5px; }
   .slot { min-height: 46px; font-size: 1.38rem; }
   .slot .food-art { width: 48px; height: 48px; }
